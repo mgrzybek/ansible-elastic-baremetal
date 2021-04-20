@@ -1,0 +1,40 @@
+[[inputs.elasticsearch]]
+	servers = [
+{% for els in range(aeb_http_starting_port, aeb_storage_paths | length -1, 1) %}
+		"http://localhost:{{ els }}",
+{% endfor %}
+	]
+
+	## Timeout for HTTP requests to the elastic search server(s)
+	http_timeout = "5s"
+
+	## When local is true (the default), the node will read only its own stats.
+	## Set local to false when you want to read the node stats from all nodes
+	## of the cluster.
+	local = true
+
+	## Set cluster_health to true when you want to obtain cluster health stats
+	cluster_health = false
+
+	## Set cluster_stats to true when you want to obtain cluster stats.
+	cluster_stats = false
+
+	## Indices to collect; can be one or more indices names or _all
+	## Use of wildcards is allowed. Use a wildcard at the end to retrieve index names that end with a changing value, like a date.
+	indices_include = ["_all"]
+
+	## One of "shards", "cluster", "indices"
+	## Currently only "shards" is implemented
+	indices_level = "shards"
+
+	## node_stats is a list of sub-stats that you want to have gathered. Valid options
+	## are "indices", "os", "process", "jvm", "thread_pool", "fs", "transport", "http",
+	## "breaker". Per default, all stats are gathered.
+	node_stats = ["indices", "jvm", "thread_pool", "transport", "http", "breaker"]
+
+	## HTTP Basic Authentication username and password.
+{% if set_telegraf_credentials | lower == 'true' %}
+	username = "{{ aeb_telegraf_username }}"
+	password = "{{ aeb_telegraf_username }}"
+{% endif %}
+

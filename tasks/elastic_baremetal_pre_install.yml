@@ -4,6 +4,8 @@
   set_fact:
     use_firewalld: false
     configure_consul: false
+    configure_telegraf: false
+    set_telegraf_credentials: false
 
 - name: Pre-Install | Check running services
   service_facts:
@@ -20,6 +22,32 @@
     - ansible_facts.services | map('quote') | join(',') | regex_search('consul')
   set_fact:
     configure_consul: true
+
+- name: Pre-Install | Check Telegraf
+  when: aeb_config_telegraf | lower == 'true'
+  block:
+
+  - name: Pre-Install | Check Telegraf configuration
+    fail: msg="Telegraf service not found - Cannot configure it"
+    when:
+    - not (ansible_facts.services | map('quote') | join(',') | regex_search('telegraf'))
+
+  - name: Pre-Install | Get Telegraf facts
+    set_fact:
+      configure_telegraf: true
+
+  - name: Pre-Install | Check Telegraf credentials
+    when:
+    - aeb_telegraf_username == None xor aeb_telegraf_password == None
+    fail: msg="Telegraf credentials must be both given"
+
+  - name: Pre-Install | Set Telegraf credentials fact
+    when:
+    - aeb_telegraf_username != None
+    - aeb_telegraf_password != None
+    set_fact:
+      set_telegraf_credentials: true
+
 
 - name: Pre-Install | Check storage paths
   loop: "{{ aeb_storage_paths }}"
