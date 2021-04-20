@@ -14,11 +14,23 @@ use more than 50% of the RAM.
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including 
-any variables that are in defaults/main.yml, vars/main.yml, and any variables 
-that can/should be set via parameters to the role. Any variables that are read 
-from other roles and/or the global scope (ie. hostvars, group vars, etc.) 
-should be mentioned here as well.
+```yaml
+aeb_container_image: "docker.io/elasticsearch:6.8.15"
+
+aeb_config_consul: true # Configure Consul if their service is found
+aeb_consul_services_path: /etc/consul.d
+
+aeb_cluster_name:
+aeb_initial_masters: [] # The Elasticsearch master nodes must be up reachable
+
+aeb_cpuset_number_per_jvm: 0
+aeb_jvm_xmx_gb: 0 # This value must be at least 1 GB
+aeb_rpc_starting_port: 9300
+aeb_http_starting_port: 9400
+aeb_storage_paths: [] # The paths must exist
+aeb_publish_host: # If empty, the default ipv4 address is used
+aeb_service_name_prefix: els # Must be the same than the master nodes
+```
 
 Dependencies
 ------------
@@ -35,10 +47,15 @@ Deploy 5 Elasticsearch services per node with 2 CPUs and 32 GB per JVM.
   roles:
   - role: ansible-elastic-baremetal
   vars:
+    # CPU / RAM limits
     aeb_cpuset_number_per_jvm: 2
     aeb_jvm_xmx_gb: 32
+
+    # Ports
     aeb_rpc_starting_port: 9300
     aeb_http_starting_port: 9400
+
+    # Storage paths
     aeb_storage_paths:
     - /srv/els-data-0
     - /srv/els-data-1
