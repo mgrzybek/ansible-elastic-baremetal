@@ -58,3 +58,20 @@
   when: aeb_publish_host | length == 0
   set_fact:
     aeb_publish_host: "{{ ansible_default_ipv4.address }}"
+
+- name: Pre-Install | Check Elasticsearch masters health
+  loop: "{{ aeb_initial_masters }}"
+  register: els_health
+  until:
+  - els_health.json['cluster_name'] == aeb_cluster_name
+  - els_health.json['status'] == "green"
+  retries: 10
+  delay: 5
+  uri:
+    url: "{{ item }}/_cluster/health?pretty"
+    method: GET
+    validate_certs: yes
+    status_code:
+    - 200
+    headers:
+      X-Requested-By: ansible
