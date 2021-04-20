@@ -25,7 +25,6 @@
 - name: Pre-Install | Check Telegraf
   when: aeb_config_telegraf | lower == 'true'
   block:
-
   - name: Pre-Install | Check Telegraf configuration
     fail: msg="Telegraf service not found - Cannot configure it"
     when:
