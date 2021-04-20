@@ -1,0 +1,26 @@
+---
+# tasks file for ansible-elastic-baremetal
+
+- name: Variables by OS
+  include_vars: "{{ item }}"
+  tags: always
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+
+- import_tasks: elastic_baremetal_pre_install.yml
+  tags:
+    - elastic_baremetal-pre-install
+
+- import_tasks: elastic_baremetal_install.yml
+  loop: "{{ aeb_storage_paths }}"
+  tags:
+    - elastic_baremetal-install
+
+- import_tasks: elastic_baremetal_post_install.yml
+  loop: "{{ aeb_storage_paths }}"
+  tags:
+    - elastic_baremetal-post-install

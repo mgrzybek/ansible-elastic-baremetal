@@ -1,0 +1,10 @@
+---
+
+elastic_baremetal_repo_rpm_url: 
+elastic_baremetal_repo_key_url: 
+
+elastic_baremetal_distro_packages: []
+
+elastic_baremetal_sysconfig: /etc/sysconfig
+
+elastic_baremetal_cluster_command: pcs

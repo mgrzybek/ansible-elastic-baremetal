@@ -1,0 +1,23 @@
+---
+
+- name: Post-Install | Start services
+  service:
+    name: "{{ aeb_service_name_prefix }}-{{ index }}.service"
+    state: started
+    enabled: yes
+
+- name: Post-Install | Consul service definition
+  when: configure_consul | lower == 'true'
+  notify: reload consul
+  template: src=service.consul.json.j2 dest={{ aeb_consul_services_path }}/{{ item.service.name }}.json
+  with_items:
+  - service:
+      name: "{{ aeb_service_name_prefix }}"
+      tags: []
+      port: 0{{ aeb_http_starting_port + index }}
+      checks:
+          - interval: "20s"
+            args:
+              - "systemctl"
+              - "status"
+              - "{{ aeb_service_name_prefix }}-{{ index }}.service"

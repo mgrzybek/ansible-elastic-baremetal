@@ -1,0 +1,4 @@
+---
+
+- src: https://github.com/mgrzybek/ansible-podman
+  version: v1.0

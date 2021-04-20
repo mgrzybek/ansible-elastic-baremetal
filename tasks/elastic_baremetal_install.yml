@@ -1,0 +1,30 @@
+---
+
+# TODO: https://blogs.oracle.com/java-platform-group/java-se-support-for-docker-cpu-and-memory-limits
+- name: Install | Create containers
+  include_role: ansible-podman
+  vars:
+    podman_pull_containers: "{{ aeb_pull_containers }}"
+    podman_containers:
+    - name: "{{ aeb_service_name_prefix }}-{{ index }}"
+      description: Elasticsearch data service
+      image: "{{ aeb_container_image }}"
+      selinux_sandboxing_paths: []
+      run_opts: >
+        --rm
+        --user elasticsearch-{{ index }}
+        --cpus {{ aeb_cpuset_number_per_jvm * index }}-{{ aeb_cpuset_number_per_jvm * index + index - 1 }}
+        --mount type=bind,src={{ item }},target=/usr/share/elasticsearch/data
+        --env node.name={{ ansible_hostname }}-{{ aeb_service_name_prefix }}-{{ index }}
+        --env cluster.name={{ aeb_cluster_name }}
+        --env discovery.seed_hosts={{ aeb_initial_masters | join(',') }}
+        --env cluster.initial_master_nodes={{ aeb_initial_masters | join(',') }}
+        --env bootstrap.memory_lock=true
+        --env path.data="/usr/share/elasticsearch/data"
+        --env "ES_JAVA_OPTS=-Xms{{ aeb_jvm_xmx_gb }}g -Xmx{{ aeb_jvm_xmx_gb }}g"
+        --env network.bind_host="0.0.0.0"
+        --env network.publish_host={{ aeb_publish_host }}
+        --env transport.publish_port={{ aeb_rpc_starting_port + index }}
+        --env http.publish_port={{ aeb_http_starting_port + index }}
+        --publish {{ aeb_rpc_starting_port + index }}:9300
+        --publish {{ aeb_http_starting_port + index }}:9200

@@ -1,0 +1,17 @@
+---
+
+aeb_container_image: "docker.io/elasticsearch:6.8.15"
+
+aeb_config_consul: false
+aeb_consul_services_path: /etc/consul.d
+
+aeb_cluster_name:
+aeb_initial_masters: []
+
+aeb_cpuset_number_per_jvm: 0
+aeb_jvm_xmx_gb: 0
+aeb_rpc_starting_port: 9300
+aeb_http_starting_port: 9400
+aeb_storage_paths: []
+aeb_publish_host:
+aeb_service_name_prefix: els

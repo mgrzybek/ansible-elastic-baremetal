@@ -1,0 +1,60 @@
+---
+
+- name: Pre-Install | Set default facts
+  set_fact:
+    use_firewalld: false
+    configure_consul: false
+
+- name: Pre-Install | Check running services
+  service_facts:
+
+- name: Pre-Install | Check Consul configuration
+  when:
+    - elastic_baremetal_config_consul | lower == 'true'
+    - not (ansible_facts.services | map('quote') | join(',') | regex_search('consul'))
+  fail: msg="Consul service not found - Cannot configure it"
+
+- name: Pre-Install | Get Consul facts
+  when:
+    - elastic_baremetal_config_consul | lower == 'true'
+    - ansible_facts.services | map('quote') | join(',') | regex_search('consul')
+  set_fact:
+    configure_consul: true
+
+- name: Pre-Install | Check storage paths
+  loop: "{{ aeb_storage_paths }}"
+  changed_when: False
+  command: test -d {{ item }}
+# TODO: check mountpoints using facts
+#  command: df | grep -w {{ item }}
+
+- name: Pre-Install | Check CPU number
+  assert:
+    that: ansible_processor_vcpus >= aeb_cpuset_number_per_jvm | int * aeb_storage_paths | length
+    fail_msg: Not enough threads on the server
+
+- name: Pre-Install | Check RAM
+  assert:
+    that: ansible_memtotal_mb * 1024 / (aeb_jvm_xmx_gb | int * aeb_storage_paths | length) >= 2
+    fail_msg: Elasticsearch should not use more than 50% of total RAM
+
+- name: Pre-Install | Check XMX
+  assert:
+    that: aeb_jvm_xmx_gb | int > 0
+    fail_msg: The JVM XMX attribute must be at least 1GB
+
+- name: Pre-Install | Check ports overlap
+  loop: "{{ range(0, aeb_storage_paths | length, 1) | list }}"
+  assert:
+    that: aeb_rpc_starting_port | int + item != aeb_http_starting_port | int + item
+    fail_msg: RPC and HTTP ports have to be different
+
+- name: Pre-Install | Check cluster name
+  assert:
+    that: aeb_cluster_name | length > 0
+    fail_msg: The cluster has te be named
+
+- name: Pre-Install | Set default aeb_publish_host fact
+  when: aeb_publish_host | length == 0
+  set_fact:
+    aeb_publish_host: "{{ ansible_default_ipv4.address }}"
