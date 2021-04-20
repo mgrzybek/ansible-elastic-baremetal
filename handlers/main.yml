@@ -1,21 +1,9 @@
 ---
 
-- name: restart elastic_baremetal service
-  service: name=elastic_baremetal state=restarted enabled=yes
+- name: restart aeb service
+  service: name=aeb state=restarted enabled=yes
   when:
-    - elastic_baremetal_post_config_restart_on_change | lower == 'true'
-    - elastic_baremetal_cluster_aware | lower == 'false'
-    - elastic_baremetal_use_docker | lower == 'false'
-
-- name: restart elastic_baremetal resource
-  shell: >
-    "{{ elastic_baremetal_cluster_command }} resource unmanage {{ elastic_baremetal_cluster_resource_name }} && \
-    systemctl restart elastic_baremetal.service && \
-    {{ elastic_baremetal_cluster_command }} resource manage {{ elastic_baremetal_cluster_resource_name }} && \
-    {{ elastic_baremetal_cluster_command }} resource enable {{ elastic_baremetal_cluster_resource_name }}"
-  when:
-    - elastic_baremetal_post_config_restart_on_change | lower == 'true'
-    - elastic_baremetal_cluster_aware | lower == 'true'
+    - aeb_post_config_restart_on_change | lower == 'true'
 
 - name: reload systemd
   systemd: daemon-reload=yes
@@ -29,5 +17,3 @@
 - name: restart telegraf
   service: name=telegraf state=restarted
 
-- name: delete repo key file
-  file: path="{{ repo_key_result.dest }}" state=absent

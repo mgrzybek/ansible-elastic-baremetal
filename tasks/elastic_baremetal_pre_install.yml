@@ -10,13 +10,13 @@
 
 - name: Pre-Install | Check Consul configuration
   when:
-    - elastic_baremetal_config_consul | lower == 'true'
+    - aeb_config_consul | lower == 'true'
     - not (ansible_facts.services | map('quote') | join(',') | regex_search('consul'))
   fail: msg="Consul service not found - Cannot configure it"
 
 - name: Pre-Install | Get Consul facts
   when:
-    - elastic_baremetal_config_consul | lower == 'true'
+    - aeb_config_consul | lower == 'true'
     - ansible_facts.services | map('quote') | join(',') | regex_search('consul')
   set_fact:
     configure_consul: true
