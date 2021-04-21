@@ -30,6 +30,9 @@ aeb_http_starting_port: 9400
 aeb_storage_paths: [] # The paths must exist
 aeb_publish_host: # If empty, the default ipv4 address is used
 aeb_service_name_prefix: els # Must be the same than the master nodes
+
+# Documentation: https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html
+aeb_node_roles: [ "data" ] 
 ```
 
 Dependencies

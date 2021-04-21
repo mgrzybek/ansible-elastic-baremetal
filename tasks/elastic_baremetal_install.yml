@@ -16,6 +16,7 @@
         --cpus {{ aeb_cpuset_number_per_jvm * index }}-{{ aeb_cpuset_number_per_jvm * index + index - 1 }}
         --mount type=bind,src={{ item }},target=/usr/share/elasticsearch/data
         --env node.name={{ ansible_hostname }}-{{ aeb_service_name_prefix }}-{{ index }}
+        --env node.roles={{ aeb_node_roles | join(',') }}
         --env cluster.name={{ aeb_cluster_name }}
         --env discovery.seed_hosts={{ aeb_initial_masters | join(',') }}
         --env cluster.initial_master_nodes={{ aeb_initial_masters | join(',') }}
