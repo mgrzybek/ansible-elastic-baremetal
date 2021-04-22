@@ -8,8 +8,8 @@ aeb_consul_services_path: /etc/consul.d
 aeb_config_telegraf: false
 aeb_telegraf_conf_path: /etc/telegraf.d
 aeb_telegraf_set_credentials: false
-aeb…telegraf_username:
-aeb…telegraf_password:
+aeb_telegraf_username:
+aeb_telegraf_password:
 
 aeb_cluster_name:
 aeb_initial_masters: []
