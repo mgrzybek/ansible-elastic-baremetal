@@ -14,3 +14,7 @@
   loop: "{{ aeb_storage_paths }}"
   tags:
     - elastic_baremetal-post-install
+
+- import_tasks: elastic_baremetal_post_install_monitoring.yml
+  tags:
+    - elastic_baremetal-post-install

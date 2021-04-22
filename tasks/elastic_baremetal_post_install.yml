@@ -21,9 +21,3 @@
               - "systemctl"
               - "status"
               - "{{ aeb_service_name_prefix }}-{{ index }}.service"
-
-- name: Post-Install | Telegraf metrics
-  when: configure_telegraf | lower == 'true'
-  notify: restart telegraf
-  template: src=telegraf.conf.j2 dest={{ aeb_telegraf_conf_path }}/els.conf
-
