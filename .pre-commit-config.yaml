@@ -6,4 +6,7 @@ repos:
   hooks:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
-
+- repo: https://github.com/ashwin153/pre-commit-vagrant
+  rev: v1.1.0
+  hooks:
+  - id: vagrant-validate

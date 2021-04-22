@@ -1,0 +1,62 @@
+- hosts: all
+  vars:
+    aeb_service_name_prefix: els
+
+    aeb_cpuset_number_per_jvm: 1
+    aeb_jvm_xmx_gb: 1
+
+    aeb_rpc_starting_port: 9300
+    aeb_http_starting_port: 9400
+
+    aeb_storage_paths:
+    - /srv/els-data-0
+    - /srv/els-data-1
+
+  pre_tasks:
+  - name: Pre-Tasks | VG elasticsearch creation
+    lvg: vg=elasticsearch pvs="{{ elasticsearch_device }}"
+
+  - name: Pre-Tasks | LV creation
+    loop: "{{ aeb_storage_paths }}"
+    loop_control:
+      index_var: index
+    lvol: vg=elasticsearch lv=data-{{ index }} size={{ (95 / (aeb_storage_paths | length)) | int }}%VG
+
+  - name: Pre-Tasks | Formatting
+    loop: "{{ aeb_storage_paths }}"
+    loop_control:
+      index_var: index
+    filesystem: dev=/dev/mapper/elasticsearch-{{ index }} fstype=ext4
+
+  - name: Pre-Tasks | Mounting
+    loop: "{{ aeb_storage_paths }}"
+    loop_control:
+      index_var: index
+    mount:
+      path: "{{ item }}"
+      src: /dev/mapper/elasticsearch-{{ index }}
+      state: mounted
+      fstype: ext4
+
+  roles:
+  - role: ansible-elastic-baremetal
+
+  post_tasks:
+  - name: Post-Tasks | Check systemd services
+    loop: "{{ aeb_storage_paths }}"
+    loop_control:
+      index_var: index
+    command: systemctl status {{ aeb_service_name_prefix }}-{{ index }}.service
+
+  - name: Post-Tasks | Check API endpoints
+    loop: "{{ aeb_storage_paths }}"
+    loop_control:
+      index_var: index
+    uri:
+      url: "http://localhost:{{ aeb_http_starting_port + index }}/_cluster/health?pretty"
+      method: GET
+      validate_certs: no
+      status_code:
+      - 200
+      headers:
+        X-Requested-By: ansible

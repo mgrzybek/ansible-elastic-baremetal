@@ -2,9 +2,17 @@
 # ansible-elastic-baremetal
 #
 
-.PHONY: test # Testing YAML syntax and generating a test playbook
-test:
-	ansible-lint -x ANSIBLE0012 .
+.PHONY: lint # Test YAML syntax
+lint:
+	@ansible-lint -x ANSIBLE0012 .
+
+.PHONY: test # Test the playbook using vagrant
+test: lint
+	@vagrant up
+
+.PHONY: destroy # Destroy vagrant boxes
+destroy:
+	@vagrant destroy -f
 
 .PHONY: help # This help message
 help:
