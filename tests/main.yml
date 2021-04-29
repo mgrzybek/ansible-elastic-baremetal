@@ -9,8 +9,6 @@
     aeb_rpc_starting_port: 9300
     aeb_http_starting_port: 9400
 
-    aeb_config_consul: false
-
     aeb_storage_paths:
     - /srv/els-data-0
     - /srv/els-data-1

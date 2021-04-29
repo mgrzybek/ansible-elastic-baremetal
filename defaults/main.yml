@@ -2,7 +2,7 @@
 
 aeb_container_image: "docker.io/elasticsearch:6.8.15"
 
-aeb_config_consul: true
+aeb_config_consul: false
 aeb_consul_services_path: /etc/consul.d
 
 aeb_config_telegraf: false
