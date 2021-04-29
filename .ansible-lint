@@ -1,0 +1,9 @@
+#
+---
+exclude_paths: []
+parseable: true
+skip_list:
+- 'yaml'  # on applique yamllint nous même
+- 'role-name'  # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern (was rule 106)
+
+# vim: ts=2 sts=2 sw=2 expandtab:
