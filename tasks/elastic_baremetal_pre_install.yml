@@ -83,7 +83,7 @@
 - name: Pre-Install | Check publish host
   when: aeb_publish_host != None
   assert:
-    that: aeb_publish_host in ansible_all_ipv4_addresses
+    that: aeb_publish_host in ansible_all_ipv4_addresses or aeb_publish_host in ansible_all_ipv6_addresses
     fail_msg: The publish host must be a mounted address on the host
 
 - name: Pre-Install | Set default aeb_publish_host fact
