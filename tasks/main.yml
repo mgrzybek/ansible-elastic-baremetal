@@ -1,20 +1,20 @@
 ---
 # tasks file for ansible-elastic-baremetal
 
-- import_tasks: elastic_baremetal_pre_install.yml
+- include_tasks: elastic_baremetal_pre_install.yml
   tags:
     - elastic_baremetal-pre-install
 
-- import_tasks: elastic_baremetal_install.yml
+- include_tasks: elastic_baremetal_install.yml
   loop: "{{ aeb_storage_paths }}"
   tags:
     - elastic_baremetal-install
 
-- import_tasks: elastic_baremetal_post_install.yml
+- include_tasks: elastic_baremetal_post_install.yml
   loop: "{{ aeb_storage_paths }}"
   tags:
     - elastic_baremetal-post-install
 
-- import_tasks: elastic_baremetal_post_install_monitoring.yml
+- include_tasks: elastic_baremetal_post_install_monitoring.yml
   tags:
     - elastic_baremetal-post-install
