@@ -81,7 +81,7 @@
     fail_msg: The cluster has te be named
 
 - name: Pre-Install | Set default aeb_publish_host fact
-  when: aeb_publish_host | length == 0
+  when: aeb_publish_host == None or aeb_publish_host | length == 0
   set_fact:
     aeb_publish_host: "{{ ansible_default_ipv4.address }}"
 

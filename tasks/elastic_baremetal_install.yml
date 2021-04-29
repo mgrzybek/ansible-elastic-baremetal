@@ -2,7 +2,7 @@
 
 # TODO: https://blogs.oracle.com/java-platform-group/java-se-support-for-docker-cpu-and-memory-limits
 - name: Install | Create containers
-  include_role: ansible-podman
+  include_role: role=ansible-podman
   vars:
     podman_pull_containers: "{{ aeb_pull_containers }}"
     podman_containers:
