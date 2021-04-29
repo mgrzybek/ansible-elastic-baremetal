@@ -80,8 +80,14 @@
     that: aeb_cluster_name | length > 0
     fail_msg: The cluster has te be named
 
+- name: Pre-Install | Check publish host
+  when: aeb_publish_host != None
+  assert:
+    that: aeb_publish_host in ansible_all_ipv4_addresses
+    fail_msg: The publish host must be a mounted address on the host
+
 - name: Pre-Install | Set default aeb_publish_host fact
-  when: aeb_publish_host == None or aeb_publish_host | length == 0
+  when: aeb_publish_host == None
   set_fact:
     aeb_publish_host: "{{ ansible_default_ipv4.address }}"
 
