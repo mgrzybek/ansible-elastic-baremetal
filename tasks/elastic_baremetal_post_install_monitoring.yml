@@ -3,4 +3,7 @@
 - name: Post-Install | Telegraf metrics
   when: configure_telegraf | lower == 'true'
   notify: restart telegraf
-  template: src=telegraf.conf.j2 dest={{ aeb_telegraf_conf_path }}/els.conf
+  template:
+    src: telegraf.conf.j2
+    dest: "{{ aeb_telegraf_conf_path }}/els.conf"
+    mode: 0644

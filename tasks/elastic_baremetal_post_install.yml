@@ -9,7 +9,10 @@
 - name: Post-Install | Consul service definition
   when: configure_consul | lower == 'true'
   notify: reload consul
-  template: src=service.consul.json.j2 dest={{ aeb_consul_services_path }}/{{ item.service.name }}.json
+  template:
+    src: service.consul.json.j2
+    dest: "{{ aeb_consul_services_path }}/{{ item.service.name }}.json"
+    mode: 0644
   with_items:
   - service:
       name: "{{ aeb_service_name_prefix }}"
