@@ -17,7 +17,7 @@ Role Variables
 ```yaml
 aeb_container_image: "docker.io/elasticsearch:6.8.15"
 
-aeb_config_consul: true # Configure Consul if their service is found
+aeb_config_consul: false # Add elasticsearch services to consul
 aeb_consul_services_path: /etc/consul.d
 
 aeb_cluster_name:
@@ -65,6 +65,30 @@ Deploy 5 Elasticsearch services per node with 2 CPUs and 32 GB per JVM.
     - /srv/els-data-2
     - /srv/els-data-3
     - /srv/els-data-4
+```
+
+Testing
+-------
+
+This role provides a `Vagrantfile` and a `Makefile`.
+
+```bash
+# Makefile-provided commands
+$ make help
+help                This help message
+lint                Test YAML syntax
+vagrant-destroy     Destroy vagrant boxes
+vagrant-variables   Test vagrant env variables
+vagrant-vbox        Test the playbook using vagrant and virtualbox
+# Mandatory variables
+$ export VAGRANT_BOX_NAME="my-box"
+# Optionnal variables
+$ export VAGRANT_BOX_URL="http://repo/my-box.box"
+$ export VAGRANT_VM_CPUS=5
+$ export VAGRANT_VM_MEMORY=5120
+# Vagrant using Virtualbox
+$ make vagrant-vbox
+$ make vagrant-destroy
 ```
 
 License
